@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Header from './components/Header';
 import Toolbar from './components/Toolbar';
@@ -26,6 +25,7 @@ const App: React.FC = () => {
         targetId: null,
         targetType: null,
     });
+    const [editingComponentId, setEditingComponentId] = React.useState<string | null>(null);
     
     const handleReset = () => {
         if (mode === AppMode.Circuit) {
@@ -97,6 +97,30 @@ const App: React.FC = () => {
             setConnections(prev => prev.filter(conn => conn.id !== id));
         }
     };
+    
+    const handleDuplicate = (id: string) => {
+        const componentToDuplicate = components.find(c => c.id === id);
+        if (!componentToDuplicate) return;
+
+        const newComponent: CircuitComponent = {
+            ...componentToDuplicate,
+            id: `comp_${Date.now()}`,
+            position: {
+                x: componentToDuplicate.position.x + 20,
+                y: componentToDuplicate.position.y + 20,
+            },
+            voltage: undefined,
+            current: undefined,
+        };
+
+        setComponents(prev => [...prev, newComponent]);
+    };
+
+    const handleShowProperties = (id: string) => {
+        const component = components.find(c => c.id === id);
+        if (component?.type === ComponentType.Oscilloscope) return;
+        setEditingComponentId(id);
+    };
 
     const handleSimulate = () => {
         if (mode !== AppMode.Circuit) return;
@@ -156,13 +180,21 @@ const App: React.FC = () => {
                             connections={connections}
                             setConnections={setConnections}
                             onComponentRightClick={handleComponentRightClick} 
+                            editingComponentId={editingComponentId}
+                            setEditingComponentId={setEditingComponentId}
                         />
                     ) : (
                         <SignalMode params={signalParams} setParams={setSignalParams} />
                     )}
                 </main>
             </div>
-            <ContextMenu menuData={contextMenu} onClose={closeContextMenu} onDelete={handleDelete} />
+            <ContextMenu 
+                menuData={contextMenu} 
+                onClose={closeContextMenu} 
+                onDelete={handleDelete}
+                onDuplicate={handleDuplicate}
+                onShowProperties={handleShowProperties}
+            />
         </div>
     );
 };

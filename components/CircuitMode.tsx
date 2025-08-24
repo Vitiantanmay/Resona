@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import type { CircuitComponent, Connection, ConnectionPoint } from '../types';
 import { ComponentType } from '../types';
@@ -112,12 +111,21 @@ interface CircuitModeProps {
     connections: Connection[];
     setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
     onComponentRightClick: (e: React.MouseEvent, componentId: string) => void;
+    editingComponentId: string | null;
+    setEditingComponentId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const CircuitMode: React.FC<CircuitModeProps> = ({ components, setComponents, connections, setConnections, onComponentRightClick }) => {
+const CircuitMode: React.FC<CircuitModeProps> = ({ 
+    components, 
+    setComponents, 
+    connections, 
+    setConnections, 
+    onComponentRightClick, 
+    editingComponentId, 
+    setEditingComponentId 
+}) => {
     const [dragging, setDragging] = React.useState<{ id: string, offsetX: number, offsetY: number } | null>(null);
     const [wireDrawing, setWireDrawing] = React.useState<{ start: ConnectionPoint; mousePos: { x: number; y: number } } | null>(null);
-    const [editingComponentId, setEditingComponentId] = React.useState<string | null>(null);
     const canvasRef = React.useRef<HTMLDivElement>(null);
     const editingInputRef = React.useRef<HTMLInputElement>(null);
 

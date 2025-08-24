@@ -5,9 +5,11 @@ interface ContextMenuProps {
     menuData: ContextMenuData;
     onClose: () => void;
     onDelete: (id: string, type: 'component' | 'wire') => void;
+    onDuplicate: (id: string) => void;
+    onShowProperties: (id: string) => void;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ menuData, onClose, onDelete }) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({ menuData, onClose, onDelete, onDuplicate, onShowProperties }) => {
     if (!menuData.visible) {
         return null;
     }
@@ -18,6 +20,22 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ menuData, onClose, onDelete }
         }
         onClose();
     };
+
+    const handleDuplicate = () => {
+        if (menuData.targetId && menuData.targetType === 'component') {
+            onDuplicate(menuData.targetId);
+        }
+        onClose();
+    };
+
+    const handleShowProperties = () => {
+        if (menuData.targetId && menuData.targetType === 'component') {
+            onShowProperties(menuData.targetId);
+        }
+        onClose();
+    };
+    
+    const isComponent = menuData.targetType === 'component';
 
     return (
         <div 
@@ -33,8 +51,18 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ menuData, onClose, onDelete }
                         Delete {menuData.targetType === 'component' ? 'Component' : 'Wire'}
                     </li>
                 )}
-                <li className="px-3 py-1.5 text-gray-500 dark:text-gray-400 rounded-lg cursor-not-allowed">Properties</li>
-                <li className="px-3 py-1.5 text-gray-500 dark:text-gray-400 rounded-lg cursor-not-allowed">Duplicate</li>
+                <li
+                    onClick={isComponent ? handleShowProperties : undefined}
+                    className={`px-3 py-1.5 rounded-lg transition-colors duration-150 ${isComponent ? 'hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer' : 'text-gray-500 dark:text-gray-400 cursor-not-allowed'}`}
+                >
+                    Properties
+                </li>
+                <li
+                    onClick={isComponent ? handleDuplicate : undefined}
+                    className={`px-3 py-1.5 rounded-lg transition-colors duration-150 ${isComponent ? 'hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer' : 'text-gray-500 dark:text-gray-400 cursor-not-allowed'}`}
+                >
+                    Duplicate
+                </li>
             </ul>
         </div>
     );
