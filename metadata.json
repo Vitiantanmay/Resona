@@ -1,0 +1,5 @@
+{
+  "name": "Resona",
+  "description": "An interactive circuit and signal simulator with a minimal, elegant design inspired by MacOS. Build simple circuits, visualize waveforms in real-time, and enjoy a smooth, professional-grade interface.",
+  "requestFramePermissions": []
+}
